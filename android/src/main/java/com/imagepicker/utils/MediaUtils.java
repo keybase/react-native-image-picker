@@ -66,6 +66,35 @@ public class MediaUtils
         return result;
     }
 
+    public static @Nullable File createNewVideoFile(@NonNull final Context reactContext,
+                                                    @NonNull final ReadableMap options,
+                                                    @NonNull final boolean forceLocal)
+    {
+        final String filename = new StringBuilder("video-")
+                .append(UUID.randomUUID().toString())
+                .append(".mp4")
+                .toString();
+
+        final File path = ReadableMapUtils.hasAndNotNullReadableMap(options, "storageOptions") && !forceLocal
+                ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+                : reactContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+
+        File result = new File(path, filename);
+
+        try
+        {
+            path.mkdirs();
+            result.createNewFile();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            result = null;
+        }
+
+        return result;
+    }
+
     /**
      * Create a resized image to fulfill the maxWidth/maxHeight, quality and rotation values
      *

@@ -249,6 +249,14 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       {
         cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, videoDurationLimit);
       }
+      final File original = createNewVideoFile(reactContext, this.options, false);
+      cameraCaptureURI = RealPathUtil.compatUriFromFile(reactContext, original);
+      if (cameraCaptureURI == null)
+      {
+        responseHelper.invokeError(callback, "Couldn't get file path for video");
+        return;
+      }
+      cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI);
     }
     else
     {

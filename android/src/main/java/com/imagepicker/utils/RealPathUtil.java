@@ -198,12 +198,12 @@ public class RealPathUtil {
 		final File photosDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 		final File photoFile = new File(photosDir, uri.getLastPathSegment());
 		if (photoFile.exists()) {
-                  return photoFile.toString();
+			return photoFile.toString();
                 }
 		final File videoDir = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
 		final File videoFile = new File(videoDir, uri.getLastPathSegment());
 		if (videoFile.exists()) {
-                  return videoFile.toString();
+			return videoFile.toString();
                 }
                 return null;
 	}

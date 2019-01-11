@@ -52,8 +52,6 @@ import com.facebook.react.modules.core.PermissionListener;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 
 import static com.imagepicker.utils.MediaUtils.*;
-import static com.imagepicker.utils.MediaUtils.createNewFile;
-import static com.imagepicker.utils.MediaUtils.getResizedImage;
 
 public class ImagePickerModule extends ReactContextBaseJavaModule
         implements ActivityEventListener
@@ -263,7 +261,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       requestCode = REQUEST_LAUNCH_IMAGE_CAPTURE;
       cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-      final File original = createNewFile(reactContext, this.options, false);
+      final File original = createNewImageFile(reactContext, this.options, false);
       imageConfig = imageConfig.withOriginalFile(original);
 
       if (imageConfig.original != null) {

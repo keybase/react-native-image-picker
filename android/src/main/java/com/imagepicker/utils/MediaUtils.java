@@ -37,9 +37,9 @@ import static com.imagepicker.ImagePickerModule.REQUEST_LAUNCH_IMAGE_CAPTURE;
 
 public class MediaUtils
 {
-    public static @Nullable File createNewFile(@NonNull final Context reactContext,
-                                               @NonNull final ReadableMap options,
-                                               @NonNull final boolean forceLocal)
+    public static @Nullable File createNewImageFile(@NonNull final Context reactContext,
+                                                    @NonNull final ReadableMap options,
+                                                    @NonNull final boolean forceLocal)
     {
         final String filename = new StringBuilder("image-")
                 .append(UUID.randomUUID().toString())
@@ -185,7 +185,7 @@ public class MediaUtils
         scaledPhoto.compress(Bitmap.CompressFormat.JPEG, result.quality, bytes);
 
         final boolean forceLocal = requestCode == REQUEST_LAUNCH_IMAGE_CAPTURE;
-        final File resized = createNewFile(context, options, !forceLocal);
+        final File resized = createNewImageFile(context, options, !forceLocal);
 
         if (resized == null)
         {

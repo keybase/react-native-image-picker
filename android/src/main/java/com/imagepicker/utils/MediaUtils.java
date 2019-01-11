@@ -41,43 +41,31 @@ public class MediaUtils
                                                     @NonNull final ReadableMap options,
                                                     @NonNull final boolean forceLocal)
     {
-        final String filename = new StringBuilder("image-")
-                .append(UUID.randomUUID().toString())
-                .append(".jpg")
-                .toString();
-
-        final File path = ReadableMapUtils.hasAndNotNullReadableMap(options, "storageOptions") && !forceLocal
-                ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                : reactContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        File result = new File(path, filename);
-
-        try
-        {
-            path.mkdirs();
-            result.createNewFile();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            result = null;
-        }
-
-        return result;
+        return createNewFile(reactContext, "image-", ".jpg", Environment.DIRECTORY_PICTURES, options, forceLocal);
     }
 
     public static @Nullable File createNewVideoFile(@NonNull final Context reactContext,
                                                     @NonNull final ReadableMap options,
                                                     @NonNull final boolean forceLocal)
     {
-        final String filename = new StringBuilder("video-")
+        return createNewFile(reactContext, "video-", ".mp4", Environment.DIRECTORY_MOVIES, options, forceLocal);
+    }
+
+    private static @Nullable File createNewFile(@NonNull final Context reactContext,
+                                                @NonNull final String prefix,
+                                                @NonNull final String extension,
+                                                @NonNull final String dirType,
+                                                @NonNull final ReadableMap options,
+                                                @NonNull final boolean forceLocal)
+    {
+        final String filename = new StringBuilder(prefix)
                 .append(UUID.randomUUID().toString())
-                .append(".mp4")
+                .append(extension)
                 .toString();
 
         final File path = ReadableMapUtils.hasAndNotNullReadableMap(options, "storageOptions") && !forceLocal
-                ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-                : reactContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+                ? Environment.getExternalStoragePublicDirectory(dirType)
+                : reactContext.getExternalFilesDir(dirType);
 
         File result = new File(path, filename);
 

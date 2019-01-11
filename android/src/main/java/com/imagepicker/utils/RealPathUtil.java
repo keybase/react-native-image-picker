@@ -195,15 +195,25 @@ public class RealPathUtil {
 	public static @Nullable String getFileProviderPath(@NonNull final Context context,
 	                                                   @NonNull final Uri uri)
 	{
-		final File photosDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-		final File photoFile = new File(photosDir, uri.getLastPathSegment());
-		if (photoFile.exists()) {
-			return photoFile.toString();
+                final String photoFile = getFileProviderPathForDirType(context, uri, Environment.DIRECTORY_PICTURES);
+		if (photoFile != null) {
+			return photoFile;
                 }
-		final File videoDir = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-		final File videoFile = new File(videoDir, uri.getLastPathSegment());
-		if (videoFile.exists()) {
-			return videoFile.toString();
+                final String videoFile = getFileProviderPathForDirType(context, uri, Environment.DIRECTORY_MOVIES);
+		if (videoFile != null) {
+			return videoFile;
+                }
+                return null;
+	}
+
+	private static @Nullable String getFileProviderPathForDirType(@NonNull final Context context,
+                                                                      @NonNull final Uri uri,
+                                                                      @NonNull final String dirType)
+	{
+		final File dir = context.getExternalFilesDir(dirType);
+		final File file = new File(dir, uri.getLastPathSegment());
+		if (file.exists()) {
+			return file.toString();
                 }
                 return null;
 	}

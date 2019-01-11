@@ -52,8 +52,6 @@ import com.facebook.react.modules.core.PermissionListener;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 
 import static com.imagepicker.utils.MediaUtils.*;
-import static com.imagepicker.utils.MediaUtils.createNewFile;
-import static com.imagepicker.utils.MediaUtils.getResizedImage;
 
 public class ImagePickerModule extends ReactContextBaseJavaModule
         implements ActivityEventListener
@@ -249,13 +247,21 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       {
         cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, videoDurationLimit);
       }
+      final File original = createNewVideoFile(reactContext, this.options, false);
+      cameraCaptureURI = RealPathUtil.compatUriFromFile(reactContext, original);
+      if (cameraCaptureURI == null)
+      {
+        responseHelper.invokeError(callback, "Couldn't get file path for video");
+        return;
+      }
+      cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI);
     }
     else
     {
       requestCode = REQUEST_LAUNCH_IMAGE_CAPTURE;
       cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-      final File original = createNewFile(reactContext, this.options, false);
+      final File original = createNewImageFile(reactContext, this.options, false);
       imageConfig = imageConfig.withOriginalFile(original);
 
       if (imageConfig.original != null) {
@@ -416,8 +422,9 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
         return;
 
       case REQUEST_LAUNCH_VIDEO_CAPTURE:
-        final String path = getRealPathFromURI(data.getData());
-        responseHelper.putString("uri", data.getData().toString());
+        uri = cameraCaptureURI;
+        final String path = getRealPathFromURI(uri);
+        responseHelper.putString("uri", uri.toString());
         responseHelper.putString("path", path);
         fileScan(reactContext, path);
         responseHelper.invokeResponse(callback);

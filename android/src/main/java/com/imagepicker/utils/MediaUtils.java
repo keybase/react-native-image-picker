@@ -37,18 +37,35 @@ import static com.imagepicker.ImagePickerModule.REQUEST_LAUNCH_IMAGE_CAPTURE;
 
 public class MediaUtils
 {
-    public static @Nullable File createNewFile(@NonNull final Context reactContext,
-                                               @NonNull final ReadableMap options,
-                                               @NonNull final boolean forceLocal)
+    public static @Nullable File createNewImageFile(@NonNull final Context reactContext,
+                                                    @NonNull final ReadableMap options,
+                                                    @NonNull final boolean forceLocal)
     {
-        final String filename = new StringBuilder("image-")
+        return createNewFile(reactContext, "image-", ".jpg", Environment.DIRECTORY_PICTURES, options, forceLocal);
+    }
+
+    public static @Nullable File createNewVideoFile(@NonNull final Context reactContext,
+                                                    @NonNull final ReadableMap options,
+                                                    @NonNull final boolean forceLocal)
+    {
+        return createNewFile(reactContext, "video-", ".mp4", Environment.DIRECTORY_MOVIES, options, forceLocal);
+    }
+
+    private static @Nullable File createNewFile(@NonNull final Context reactContext,
+                                                @NonNull final String prefix,
+                                                @NonNull final String extension,
+                                                @NonNull final String dirType,
+                                                @NonNull final ReadableMap options,
+                                                @NonNull final boolean forceLocal)
+    {
+        final String filename = new StringBuilder(prefix)
                 .append(UUID.randomUUID().toString())
-                .append(".jpg")
+                .append(extension)
                 .toString();
 
         final File path = ReadableMapUtils.hasAndNotNullReadableMap(options, "storageOptions") && !forceLocal
-                ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                : reactContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                ? Environment.getExternalStoragePublicDirectory(dirType)
+                : reactContext.getExternalFilesDir(dirType);
 
         File result = new File(path, filename);
 
@@ -156,7 +173,7 @@ public class MediaUtils
         scaledPhoto.compress(Bitmap.CompressFormat.JPEG, result.quality, bytes);
 
         final boolean forceLocal = requestCode == REQUEST_LAUNCH_IMAGE_CAPTURE;
-        final File resized = createNewFile(context, options, !forceLocal);
+        final File resized = createNewImageFile(context, options, !forceLocal);
 
         if (resized == null)
         {

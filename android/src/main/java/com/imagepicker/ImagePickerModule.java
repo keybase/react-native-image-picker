@@ -424,8 +424,9 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
         return;
 
       case REQUEST_LAUNCH_VIDEO_CAPTURE:
-        final String path = getRealPathFromURI(data.getData());
-        responseHelper.putString("uri", data.getData().toString());
+        uri = cameraCaptureURI;
+        final String path = getRealPathFromURI(uri);
+        responseHelper.putString("uri", uri.toString());
         responseHelper.putString("path", path);
         fileScan(reactContext, path);
         responseHelper.invokeResponse(callback);

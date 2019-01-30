@@ -72,6 +72,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
   protected Uri cameraCaptureURI;
   private Boolean noData = false;
   private Boolean pickVideo = false;
+  private Boolean useImageCaptureSecure = false;
   private ImageConfig imageConfig = new ImageConfig(null, null, 0, 0, 100, 0, false);
 
   @Deprecated
@@ -259,14 +260,18 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     else
     {
       requestCode = REQUEST_LAUNCH_IMAGE_CAPTURE;
-      cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      if (useImageCaptureSecure) {
+        cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
+      } else {
+        cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      }
 
       final File original = createNewImageFile(reactContext, this.options, false);
       imageConfig = imageConfig.withOriginalFile(original);
 
       if (imageConfig.original != null) {
         cameraCaptureURI = RealPathUtil.compatUriFromFile(reactContext, imageConfig.original);
-      }else {
+      } else {
         responseHelper.invokeError(callback, "Couldn't get file path for photo");
         return;
       }
@@ -280,7 +285,8 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
     if (cameraIntent.resolveActivity(reactContext.getPackageManager()) == null)
     {
-      responseHelper.invokeError(callback, "Cannot launch camera");
+      // Callers will check for a 'Cannot launch camera' substring.
+      responseHelper.invokeError(callback, "Cannot launch camera (resolveActivity failed)");
       return;
     }
 
@@ -302,7 +308,8 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     catch (ActivityNotFoundException e)
     {
       e.printStackTrace();
-      responseHelper.invokeError(callback, "Cannot launch camera");
+      // Callers will check for a 'Cannot launch camera' substring.
+      responseHelper.invokeError(callback, "Cannot launch camera (startActivityForResult failed)");
     }
   }
 
@@ -763,6 +770,9 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     pickVideo = false;
     if (options.hasKey("mediaType") && options.getString("mediaType").equals("video")) {
       pickVideo = true;
+    }
+    if (options.hasKey("androidUseImageCaptureSecure")) {
+      useImageCaptureSecure = options.getBoolean("androidUseImageCaptureSecure")
     }
     videoQuality = 1;
     if (options.hasKey("videoQuality") && options.getString("videoQuality").equals("low")) {

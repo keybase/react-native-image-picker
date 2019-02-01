@@ -286,7 +286,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     if (cameraIntent.resolveActivity(reactContext.getPackageManager()) == null)
     {
       // Callers will check for a 'Cannot launch camera' substring.
-      responseHelper.invokeError(callback, "Cannot launch camera (resolveActivity failed)");
+      responseHelper.invokeError(callback, "Cannot launch camera (resolveActivity failed for action " + cameraIntent.getAction() + ")");
       return;
     }
 
@@ -309,7 +309,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     {
       e.printStackTrace();
       // Callers will check for a 'Cannot launch camera' substring.
-      responseHelper.invokeError(callback, "Cannot launch camera (startActivityForResult failed)");
+      responseHelper.invokeError(callback, "Cannot launch camera (startActivityForResult failed for action " + cameraIntent.getAction() + ")");
     }
   }
 
@@ -771,6 +771,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     if (options.hasKey("mediaType") && options.getString("mediaType").equals("video")) {
       pickVideo = true;
     }
+    useImageCaptureSecure = false;
     if (options.hasKey("androidUseImageCaptureSecure")) {
       useImageCaptureSecure = options.getBoolean("androidUseImageCaptureSecure");
     }

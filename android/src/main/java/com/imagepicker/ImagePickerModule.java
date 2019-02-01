@@ -772,7 +772,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       pickVideo = true;
     }
     if (options.hasKey("androidUseImageCaptureSecure")) {
-      useImageCaptureSecure = options.getBoolean("androidUseImageCaptureSecure")
+      useImageCaptureSecure = options.getBoolean("androidUseImageCaptureSecure");
     }
     videoQuality = 1;
     if (options.hasKey("videoQuality") && options.getString("videoQuality").equals("low")) {
